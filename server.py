@@ -172,9 +172,9 @@ def loadDataset(algorithm, file, splitData = False):
 
         # calculate root mean squared error
         trainScore = math.sqrt(mean_squared_error(y_train[0], predict_train[:,0]))
-        print('Train Score: %.2f RMSE' % (trainScore))
+        #print('Train Score: %.2f RMSE' % (trainScore))
         testScore = math.sqrt(mean_squared_error(y_test[0], predict_test[:,0]))
-        print('Test Score: %.2f RMSE' % (testScore))
+        #print('Test Score: %.2f RMSE' % (testScore))
 
         # shift train predictions for plotting
         trainPredictPlot = np.empty_like(dataset)
@@ -184,10 +184,10 @@ def loadDataset(algorithm, file, splitData = False):
         # shift test predictions for plotting
         testPredictPlot = np.empty_like(dataset)
         testPredictPlot[:, :] = np.nan
-        testPredictPlot[len(predict_train)+(look_back*2)+2:len(dataset), :] = predict_test
+        testPredictPlot[len(predict_train)+(look_back*2)+1:len(dataset)-1, :] = predict_test
 
-        predictedValue = testPredictPlot[-1]#[len(predict_train)+(look_back*2)+1]
-        realValue = scaler.inverse_transform(dataset)[-1]#df['y'][len(predict_train)+(look_back*2)+1]
+        predictedValue = testPredictPlot[-2]#[len(predict_train)+(look_back*2)+1]
+        realValue = scaler.inverse_transform(dataset)[-2]#df['y'][len(predict_train)+(look_back*2)+1]
         #differenceValue = predictedValue - realValue
 
         print('Predicted value for the next 15 minutes: %.2f' % (predictedValue))
@@ -232,7 +232,7 @@ def neuralNetwork(X_train, X_test, y_train, y_test, look_back):
     model.fit(X_train, y_train, epochs=100, batch_size=1, verbose=2)
 
     scores = model.evaluate(X_test, y_test, verbose=0)
-    print("Accuracy: %0.2f" % (scores*100))
+    #print("Accuracy: %0.2f" % (scores*100))
 
     # make predictions
     predict_train = model.predict(X_train)
@@ -245,7 +245,7 @@ def svmpy(X_train, X_test, y_train, y_test):
     model.fit(X_train, y_train)
     
     scores = cross_val_score(model, X_test, y_test, cv=5)
-    print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+    #print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
     # make predictions
     predict_train = model.predict(X_train).reshape(-1,1)
@@ -258,7 +258,7 @@ def decisionTree(X_train, X_test, y_train, y_test):
     model.fit(X_train, y_train)
 
     scores = cross_val_score(model, X_test, y_test, cv=5)
-    print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+    #print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
     # make predictions
     predict_train = model.predict(X_train).reshape(-1,1)
@@ -271,7 +271,7 @@ def LinearReg(X_train, X_test, y_train, y_test):
     model.fit(X_train, y_train)
 
     scores = cross_val_score(model, X_test, y_test, cv=5)
-    print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+    #print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
     # make predictions
     predict_train = model.predict(X_train).reshape(-1,1)
@@ -284,7 +284,7 @@ def RandomForest(X_train, X_test, y_train, y_test):
     model.fit(X_train, y_train)
 
     scores = cross_val_score(model, X_test, y_test, cv=5)
-    print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+    #print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
     # make predictions
     predict_train = model.predict(X_train).reshape(-1,1)
@@ -313,14 +313,14 @@ def getPrediction(files):
         minValue = min(value)
         maxValue = max(value)
 
-        print("Minimum Value: %.2f" % minValue)
-        print("Minimum Phase: %d" % value.index(minValue))
+        #print("Minimum Value: %.2f" % minValue)
+        #print("Minimum Phase: %d" % value.index(minValue))
         print("Maximum Value: %.2f" % maxValue)
-        print("Maximum Phase: %d" % value.index(maxValue))
+        print("Change to Phase: %d\n" % value.index(maxValue))
 
         mean_value = statistics.mean(value)
 
-        print("Mean Value: %.2f" % mean_value)
+        #print("Mean Value: %.2f" % mean_value)
 
         differenceValue = [0, 0, 0]
 
@@ -328,7 +328,7 @@ def getPrediction(files):
         differenceValue[1] = value[1] - mean_value
         differenceValue[2] = value[2] - mean_value
 
-        print("Difference: %.2f" % differenceValue[value.index(minValue)])
+        #print("Difference: %.2f" % differenceValue[value.index(minValue)])
 
         return value.index(maxValue)
 
@@ -389,7 +389,7 @@ if __name__ == "__main__":
                 listFiles.append(filename)
 
             phase = getPrediction(listFiles)
-            print(phase)
+            #print(phase)
 
             # close the client socket
             client_socket.close()

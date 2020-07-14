@@ -11,11 +11,17 @@ files_new = [
     'samples_new/688AB5015D8A%3A02-energy_aplus_inc.csv',
     'samples_new/688AB5015D8A%3A02-power_aplus_peak.csv'
 ]
-
+"""
 files = [
     'samples/688AB5004D91_02-energy_aminus_inc.csv',
     'samples/688AB5004D91_02-energy_aplus_inc.csv',
     'samples/688AB5004D91_02-power_aplus_peak.csv'
+]
+"""
+files = [
+    'samples_new/688AB5015D8A%3A02-energy_aplus_inc.csv',
+    'samples_new/688AB5015D8A%3A03-energy_aplus_inc.csv',
+    'samples_new/688AB5015D8A%3A04-energy_aplus_inc.csv'
 ]
 
 SEPARATOR = "<SEPARATOR>"
@@ -33,8 +39,8 @@ print("[+] Connected.")
 
 k = 0
 while k < 3:
-    #filename = sys.argv[k+1]
-    filename = files[k]
+    filename = sys.argv[k+1]
+    #filename = files[k]
     size = len(filename)
     size = bin(size)[2:].zfill(16) # encode filename size as 16 bit binary
     s.send(bytes(size, encoding="utf-8"))
@@ -49,7 +55,7 @@ while k < 3:
     l = file_to_send.read()
     s.sendall(l)
     file_to_send.close()
-    print('File Sent')
+    print('File %s sent' % files[k])
     
     k += 1
 # close the socket

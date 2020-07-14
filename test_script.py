@@ -32,13 +32,19 @@ train_dataset = 0.8
 look_back = 1
 
 def menu():
-    print("Classifiers:")
+    print("\npython test_script.py [Classifier] [Sample] (t)")
+    print("\nClassifiers:")
     print("\tann -> Artificial Neural Networks")
     print("\tsvm -> Support Vector Machines")
     print("\ttree -> Decision Tree")
     print("\tlinreg -> Linear Regression")
     print("\tforest -> Random Forest")
     print("\tprophet -> Facebook Prophet")
+    print("\nSamples:")
+    print("\t0 -> Periodical")
+    print("\t1 -> Continuous")
+    print("\t2 -> Discontinuous")
+    print("\n(t) -> select largest continuous stream of data")
     return
 
 def loadDataset(algorithm, file, splitData):
@@ -382,20 +388,27 @@ def RandomForest(X_train, X_test, y_train, y_test):
     return predict_train, predict_test
 
 
-def getPrediction(file, splitData = False):
+def getPrediction(splitData):
 
-    algorithms = [
-        "ann-a", "ann-s",
-        "annra", "annrs",
-        "annsa", "annss",
-        "svm", "tree",
-        "linreg", "forest",
-        "prophet"
+    samples = [
+        'samples/periodic_data.csv',
+        'samples/688AB5004D91_02-energy_aplus_inc.csv',
+        'samples_new/688AB5015D8A%3A02-energy_aplus_inc.csv',
     ]
 
-    value = loadDataset(algorithms[0], file, splitData)
+    #algorithms = [
+    #    "ann-a", "ann-s",
+    #    "annra", "annrs",
+    #    "annsa", "annss",
+    #    "svm", "tree",
+    #    "linreg", "forest",
+    #    "prophet",
+    #]
 
-    print("Value %.2f" % value)
+    #value = loadDataset(algorithms[0], file, splitData)
+    value = loadDataset(sys.argv[1], samples[int(sys.argv[2])], splitData)
+
+    #print("Value %.2f" % value)
 
     #print("Minimum Value: %.2f" % minValue)
     #print("Phase: %d" % value.index(minValue))
@@ -403,8 +416,11 @@ def getPrediction(file, splitData = False):
     return #value.index(minValue)
 
 if __name__ == "__main__":
-    getPrediction('samples/periodic_data.csv')
-    #getPrediction('samples/688AB5004D91_02-energy_aplus_inc.csv')
-    #getPrediction('samples_new/688AB5015D8A%3A02-energy_aplus_inc.csv')
-    #getPrediction('samples_new/688AB5015D8A%3A02-energy_aplus_inc.csv', True)
+    if len(sys.argv) > 2:
+        getPrediction(True if len(sys.argv) > 3 and sys.argv[3] == "t" else False)
+
+    elif len(sys.argv[1]) > 1 and sys.argv[1] == "help":
+        menu()
+
+    
     
